@@ -60,7 +60,13 @@ module.exports = {
   },
   //delete a user
   deleteUser(req, res) {
-    User.findOneAndRemove({ _id: req.params.userId });
+    User.findOneAndRemove({ _id: req.params.userId })
+    .then((user) =>
+    !user ? res.status(404).json({ message: "No user found with this ID"})
+    :Thought.deleteMany({_id: {$in: user.thoughts}})
+    )
+    .then(() => res.json({ message: "User deleted"}))
+    .catch((err) => res.status(500).json(err));
   },
   //add a friend
   addFriend(req, res) {
