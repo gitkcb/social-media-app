@@ -20,7 +20,7 @@ router.route('/:userId')
 
 // /api/users/:userId/friends
 router.route('/:userId/friends')
-.put(addFriend)
+.post(addFriend)
 
 // /api/users/:userId/friends/:friendId
 router.route('/:userId/friends/:friendId')
