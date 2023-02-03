@@ -1,4 +1,4 @@
-const { ObjectId } = require("mongoose").Types;
+
 const { User, Thought } = require("../models");
 //aggregate function to get the number of users overall
 const userCount = async () =>
@@ -10,25 +10,16 @@ module.exports = {
   //Get all users
   getUsers(req, res) {
     User.find()
-      .then(async (users) => {
-        const userObj = {
-          users,
-          userCount: await userCount(),
-        };
-        return res.json(userObj);
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json(err));
   },
   //getting a single user
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
-      .populate('thoughts')
-      .populate('friends')
+      .populate("thoughts")
+      .populate("friends")
       .select("-__v")
-      .then(async (user) =>
+      .then((user) =>
         !user
           ? res.status(404).json({ message: "No user with that ID" })
           : res.json(user)
@@ -74,7 +65,7 @@ module.exports = {
     console.log(req.body);
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: [req.params.friendId] } },
+      { $addToSet: { friends: req.params.friendId }},
       { runValidators: true, new: true }
     )
       .then((user) =>
